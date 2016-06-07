@@ -1,0 +1,167 @@
+*
+I have designed a job scheduler which work in a Shortest Job First Strategy. 
+The input to the scheduler is a Priority Queue that can accept the request for a new job dynamically. 
+Priority Queue with all possible operationson it. 
+*/
+
+#include<stdio.h>
+#include<stdlib.h>
+void max_heapify(int *ar,int *bst,int i,int *size);
+void swap(int *a,int *b){
+ int temp= *a;
+ *a = *b;
+ *b = temp;
+}
+void builtheap(int *ar,int *bst, int *no)
+{
+ int i; 
+ for(i=(*no)/2;i>=1;i--){
+//  printf("inside for val of i = %d and no =%d \n",i, *no);  
+  max_heapify(ar,bst,i,no);
+ }
+}
+void max_heapify(int *ar,int *bst,int i,int *size){ 
+int p1,temp,temp2; 
+if(i!=0 && ((2*i+1==(*size) && i == (*size)/2) || (i != (*size)/2) && (*size)!=0)){
+// printf("2i+1 ele %d  size %d\n",ar[(2*i)+1],*size); 
+ if(ar[2*i+1]<ar[2*i]){
+  if(ar[2*i+1]<ar[i]){
+   swap(&ar[i],&ar[2*i+1]);
+   swap(&bst[i],&bst[2*i+1]); 
+   max_heapify(ar,bst,i/2,size);  
+  }
+  else if(ar[2*i+1]==ar[i]){
+   if(bst[2*i+1]<bst[i]){
+    swap(&ar[2*i+1],&ar[i]);
+    swap(&bst[2*i+1],&bst[i]);
+    max_heapify(ar,bst,i/2,size);
+   }    
+  } 
+ }
+ else if(ar[2*i+1]>ar[2*i]){
+  if(ar[2*i]<ar[i]){
+   
+   swap(&ar[2*i],&ar[i]);
+   swap(&bst[2*i],&bst[i]);
+   max_heapify(ar,bst,i/2,size);
+  }
+  else if(ar[2*i]==ar[i]){
+   if(bst[2*i]<bst[i]){
+    swap(&ar[2*i],&ar[i]);
+    swap(&bst[2*i],&bst[i]);   
+    max_heapify(ar,bst,i/2,size);
+   }
+  }
+ }
+ else{
+  if(bst[2*i+1]<bst[2*i]){
+   if(ar[2*i+1]<ar[i]){
+    swap(&ar[2*i+1],&ar[i]);
+    swap(&bst[2*i+1],&bst[i]);
+    max_heapify(ar,bst,i/2,size);
+   }
+   else if(ar[2*i+1]==ar[i]){
+                         if(bst[2*i+1]<bst[i]){
+                                 swap(&ar[2*i+1],&ar[i]);
+                                 swap(&bst[2*i+1],&bst[i]);
+                          max_heapify(ar,bst,i/2,size);
+    }   
+   }
+  }
+  else if(bst[2*i+1]>bst[2*i]){
+   if(ar[2*i]<ar[i]){
+                         swap(&ar[2*i],&ar[i]);
+    swap(&bst[2*i],&bst[i]);
+    max_heapify(ar,bst,i/2,size);
+   }
+                 else if(ar[2*i]==ar[i]){
+                         if(bst[2*i]<bst[i]){
+                                 swap(&ar[2*i],&ar[i]);
+                                 swap(&bst[2*i],&bst[i]);
+     max_heapify(ar,bst,i/2,size);
+                         }
+   } 
+  }
+  else
+  {
+   if(ar[i]>ar[2*i]){
+    swap(&ar[i],&ar[2*i]);
+    swap(&bst[i],&bst[2*i]);
+    max_heapify(ar,bst,i/2,size);
+   }
+   else if(ar[i]==ar[2*i]){
+    if(bst[2*i]<bst[i]){
+     swap(&ar[i],&ar[2*i]);
+                                 swap(&bst[i],&bst[2*i]);
+     max_heapify(ar,bst,i/2,size);
+    }
+   }
+  }
+ } 
+}
+if(i!=0 &&(2*i==(*size) && i == (*size)/2 || i != (*size)/2 && (*size)!=0)){
+// printf("element 2i = %d size = %d \n",ar[2*i],*size);
+ if(ar[i]>ar[2*i]){
+         swap(&ar[i],&ar[2*i]);
+                swap(&bst[i],&bst[2*i]);
+                max_heapify(ar,bst,i/2,size);
+         }
+        else if(ar[i]==ar[2*i]){
+         if(bst[2*i]<bst[i]){
+                swap(&ar[i],&ar[2*i]);
+                  swap(&bst[i],&bst[2*i]);
+                    max_heapify(ar,bst,i/2,size);
+                 }
+      }
+
+} 
+}
+void deletion(int *ar,int *bst ,int *size,int *delno){
+ if(*size>=1){
+  delno[0] = ar[1];
+  delno[1] = bst[1];
+ // printf("inside del job is with arvl time = %d and bst time = %d\n",delno[0],delno[1]);
+ // printf("inside del value of *size is %d\n",*size);  
+  swap(&ar[*size],&ar[1]);
+  swap(&bst[*size],&bst[1]);
+  (*size)--; 
+ // printf("size in del = %d \n",*size);
+  ar = realloc(ar,((*size)+1) * sizeof(int));
+  bst = realloc(bst,((*size)+1)*sizeof(int)); 
+  builtheap(ar,bst,size); 
+ // int j;  
+ // for(j=0;j<=*size;j++){
+ //  printf("%d  %d \n",ar[j],bst[j]); 
+ // }
+ }
+}
+void main()
+{
+ int no;
+ printf("Enter number of jobs\n");
+ scanf("%d",&no);
+ int arsize = no+1;
+ int *ar = malloc(arsize * sizeof(int));
+ int *bst = malloc(arsize * sizeof(int));
+ int i=1;
+ ar[0]=0;
+ bst[0]=0;
+ while(no--){
+  printf("enter arival time and bust time for %d job\n",i);
+  scanf("%d",&ar[i]);
+  scanf("%d",&bst[i]);
+  i++;
+ }
+ int size = arsize-1; 
+ builtheap(ar,bst,&size);
+ int j;
+ //for(j=0;j<=size;j++){
+ // printf("%d  %d \n",ar[j],bst[j]); 
+ //}
+ //printf("after builheap\n");
+ int delno[2];
+ for(j=1 ; j<= arsize-1; j++){
+  deletion(ar,bst,&size,delno);  
+  printf("%d job is with arvl time = %d and bst time = %d\n",j,delno[0],delno[1]);
+ }
+} 
