@@ -1,10 +1,3 @@
-programs
-========
-
-Programs in c
- Towers Of Hanoi Using Link List as stacks(Binary Logic implementation) in c program
-Towers Of Hanoi Using Link List as stacks(Binary Logic implementation)
-
 #include<stdio.h>
 #include <stdlib.h>
 
